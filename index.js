@@ -14,7 +14,7 @@ app
   .listen( result =>{
     log('[EVENT] app:profile:sign-in ')
     log('store result in database ' + result.id)
-    app.sendMessage(STREAM_ENUM.FIRST_CHARGE) 
+    app.sendMessage(STREAM_ENUM.FIRST_CHARGE)  
   })
 
 app

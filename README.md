@@ -4,7 +4,7 @@
 
 All requests come as `redis stream` format and the payload contains the following fields.
 ```bash
-{ full, email, password }
+{ name, email, password }
 ```
 This service must retrive stream event and then store data as `HASHMAP` in redis and, finally, send stream event to other `stream`
 
@@ -18,6 +18,19 @@ This service must retrive stream event and then store data as `HASHMAP` in redis
 node index.js
 ```
 
+## Redis commands
+
+For mannual testing the project and data flow you can send data with this two command
+
+```bash
+XADD app:profile:login * name mahdi email info@imani.ir password 123
+```
+
+And final result should capture with this one
+
+```bash
+XREAD BLOCK 0 STREAMS app:wallet:first-charge $
+```
 ## Refrence
 
 * https://redis.io/topics/streams-intro
