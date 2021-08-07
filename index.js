@@ -9,7 +9,7 @@ let app = new StreamHandler(config)
 app.createStream(STREAM_ENUM)
 
 app
-  .defineVariables(STREAM_ENUM.LOGIN)
+  .defineVariables(STREAM_ENUM.SIGN_IN)
   .defineGroup()
   .listen( result =>{
     log('[EVENT] app:profile:sign-in ')
