@@ -1,13 +1,32 @@
-let { App } = require('./src/app')
+let { log }           = require('./src/common/logs')
+let { StreamHandler } = require('./src/app')
+let config            = require('./src/config/redis')
+let STREAM_ENUM       = require('./src/config/event')
 
-let config = {
-  host: 'redis',
-  password: 'bnf9cU34naC9'
-}
 
-let app = new App(config)
+let app = new StreamHandler(config)
+
+app.createStream(STREAM_ENUM)
 
 app
-  .defineVariables()
+  .defineVariables(STREAM_ENUM.LOGIN)
   .defineGroup()
-  .launch()
+  .listen( result =>{
+    log('[EVENT] app:profile:sign-in ')
+    log('store result in database ' + result.id)
+    app.sendMessage(STREAM_ENUM.FIRST_CHARGE) 
+  })
+
+app
+  .defineVariables(STREAM_ENUM.LOGIN)
+  .defineGroup()
+  .listen( result =>{
+    log('[EVENT] app:profile:login ')
+    log('store result in database ' + result.id)
+    app.sendMessage(STREAM_ENUM.PROFILE_UPDTAE_STATE) 
+  })
+
+setTimeout(_=>{
+  log('[EVENT] send sample event to `app:profile:login` after 6000ms')
+  app.sendMessage(STREAM_ENUM.LOGIN)
+}, 6000)
