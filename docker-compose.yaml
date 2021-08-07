@@ -1,0 +1,25 @@
+version: "3.7"
+
+services:
+
+  app:
+    image: node:14.15.0-alpine3.10
+    restart: always
+    working_dir: /app
+    environment:
+      PORT: 3000
+      NODE_ENV: development
+      REDIS_PATH: 'redis'
+      REDIS_PASSWORD: bnf9cU34naC9
+    ports:
+      - "3000:3000"
+      - "9229:9229"
+    volumes:
+      - ./:/app
+    command: npx nodemon --exec 'node --inspect=0.0.0.0:9229 index.js'
+
+  redis:
+    image: bitnami/redis:6.0-debian-10
+    environment: 
+      - REDIS_PASSWORD=bnf9cU34naC9
+
