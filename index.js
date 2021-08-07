@@ -1,8 +1,13 @@
-let app = require('./src/app')
-const port = process.env.port || 3000
+let { App } = require('./src/app')
 
-app.listen( port, ( err ) => {
-  if ( err ) console.log( err )
-    else console.log( `Auth service start in port ${port}` )
-  }
-)
+let config = {
+  host: 'redis',
+  password: 'bnf9cU34naC9'
+}
+
+let app = new App(config)
+
+app
+  .defineVariables()
+  .defineGroup()
+  .launch()
