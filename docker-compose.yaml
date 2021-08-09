@@ -16,7 +16,7 @@ services:
       - "9229:9229"
     volumes:
       - ./:/app
-    command: npx nodemon --exec 'node --inspect=0.0.0.0:9229 index.js'
+    command: npx nodemon --exec 'node --inspect=0.0.0.0:9229 ./src/index.js'
 
   redis:
     image: bitnami/redis:6.0-debian-10

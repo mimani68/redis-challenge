@@ -1,8 +1,8 @@
-let { log }           = require('./src/common/logs')
-let { StreamHandler } = require('./src/app')
-let { redisClient }   = require('./src/common/redis/redis')
-let STREAM_ENUM       = require('./src/config/event')
-let { User }          = require('./src/model/user')
+let { log }           = require('./common/logs')
+let { StreamHandler } = require('./common/stream/stream.class')
+let { redisClient }   = require('./common/redis/redis')
+let STREAM_ENUM       = require('./config/event')
+let { User }          = require('./model/user')
 
 // Initial setup
 let app = new StreamHandler(redisClient) 

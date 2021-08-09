@@ -1,6 +1,6 @@
 let async = require('async');
 
-let { arrayToObject } = require('./common/helper')
+let { arrayToObject } = require('../helper')
 
 function StreamHandler(redisClient) {
   this.redisClient = redisClient;

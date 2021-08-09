@@ -1,7 +1,7 @@
-let { log }           = require('./src/common/logs')
-let { StreamHandler } = require('./src/app')
-let { redisClient }   = require('./src/common/redis/redis')
-let STREAM_ENUM       = require('./src/config/event')
+let { log }           = require('./common/logs')
+let { StreamHandler } = require('./common/stream/stream.class')
+let { redisClient }   = require('./common/redis/redis')
+let STREAM_ENUM       = require('./config/event')
 
 let app = new StreamHandler(redisClient)
 log(`Event "${ STREAM_ENUM.SIGN_IN }" send to server`)
