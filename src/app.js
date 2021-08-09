@@ -33,10 +33,12 @@ StreamHandler.prototype.sendMessage = function (steamAddress, value) {
   if ( !steamAddress ) {
     steamAddress = this.STREAMS_KEY
   }
-  this.redisClient.xadd(steamAddress, '*', 
-    'direction', 'right',  
-    'sensor_ts', '154', 
-    'loop_info', 1,  
+  // let arg = [steamAddress, '*']
+  // for ( let ley in value ) {
+  //   arg.push(ley)
+  //   arg.push(value[ley])
+  // }
+  this.redisClient.xadd(steamAddress, '*', 'a', '2',
     function (err) { 
       if (err) { 
         console.log(err)
