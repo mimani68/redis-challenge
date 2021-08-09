@@ -18,6 +18,11 @@ This service must retrive stream event and then store data as `HASHMAP` in redis
 node index.js
 ```
 
+For start `app:profile:sign_in` event you can use
+```bash
+node publisher.js
+```
+
 ## Redis commands
 
 For mannual testing the project and data flow you can send data with this two command
@@ -29,7 +34,7 @@ XADD app:profile:login * name mahdi email info@imani.ir password 123
 And final result should capture with this one
 
 ```bash
-XREAD BLOCK 0 STREAMS app:wallet:first-charge $
+XREAD BLOCK 0 STREAMS app:wallet:first_charge $
 ```
 ## Refrence
 

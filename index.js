@@ -1,32 +1,53 @@
 let { log }           = require('./src/common/logs')
 let { StreamHandler } = require('./src/app')
-let config            = require('./src/config/redis')
+let { redisClient }   = require('./src/common/redis/redis')
 let STREAM_ENUM       = require('./src/config/event')
+let { User }          = require('./src/model/user')
 
-
-let app = new StreamHandler(config)
-
+// Initial setup
+let app = new StreamHandler(redisClient) 
 app.createStream(STREAM_ENUM)
 
-app
-  .defineVariables(STREAM_ENUM.SIGN_IN)
+// Event `Start`
+let startEvent = new StreamHandler(redisClient)
+startEvent
+  .defineVariables(STREAM_ENUM.START)
   .defineGroup()
-  .listen( result =>{
-    log('[EVENT] app:profile:sign-in ')
-    log('store result in database ' + result.id)
-    app.sendMessage(STREAM_ENUM.FIRST_CHARGE)  
+  .listen( req =>{
+    log(`[EVENT] ${ STREAM_ENUM.START } - ${ req.id }`)
+    log('store result in database ' + req.id)
   })
 
-app
+// Event `Login`
+let loginEvent = new StreamHandler(redisClient) 
+loginEvent
   .defineVariables(STREAM_ENUM.LOGIN)
   .defineGroup()
-  .listen( result =>{
-    log('[EVENT] app:profile:login ')
-    log('store result in database ' + result.id)
-    app.sendMessage(STREAM_ENUM.PROFILE_UPDTAE_STATE) 
+  .listen( req =>{
+    log(`[EVENT] ${ STREAM_ENUM.LOGIN } - ${ req.id }`)
+    let payload = { state: 'User login' }
+    loginEvent.sendMessage(STREAM_ENUM.PROFILE_UPDTAE_STATE, payload) 
   })
 
-setTimeout(_=>{
-  log('[EVENT] send sample event to `app:profile:login` after 6000ms')
-  app.sendMessage(STREAM_ENUM.LOGIN)
-}, 6000)
+// Event `Sign in`
+let SignInEvent = new StreamHandler(redisClient) 
+SignInEvent
+  .defineVariables(STREAM_ENUM.SIGN_IN)
+  .defineGroup()
+  .listen( req =>{
+    log(`[EVENT] ${ STREAM_ENUM.SIGN_IN } - ${ req.id }`)
+    /**
+     * 
+     * Notify other services that new request is incoming
+     * 
+     */
+    let payload = { state: 'User unverified' }
+    SignInEvent.sendMessage(STREAM_ENUM.FIRST_CHARGE, payload)
+    /**
+     * 
+     * Store user as HashMap inredis
+     * 
+     */
+    let u = new User(req.user, req.email, req.password)
+    u.save()
+  })

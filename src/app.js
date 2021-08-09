@@ -1,10 +1,9 @@
 let async = require('async');
-let redis = require('redis');
 
 let { arrayToObject } = require('./common/helper')
 
-function StreamHandler(options) {
-  this.redisClient = redis.createClient(options);
+function StreamHandler(redisClient) {
+  this.redisClient = redisClient;
 }
 
 StreamHandler.prototype.defineVariables = function (stream_key) {
@@ -33,10 +32,12 @@ StreamHandler.prototype.sendMessage = function (steamAddress, value) {
   if ( !steamAddress ) {
     steamAddress = this.STREAMS_KEY
   }
-  this.redisClient.xadd(steamAddress, '*', 
-    'direction', 'right',  
-    'sensor_ts', '154', 
-    'loop_info', 1,  
+  let arg = [steamAddress, '*']
+  for ( let ley in value ) {
+    arg.push(ley)
+    arg.push(value[ley])
+  }
+  this.redisClient.xadd(...arg,
     function (err) { 
       if (err) { 
         console.log(err)
