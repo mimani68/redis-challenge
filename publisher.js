@@ -5,7 +5,7 @@ let STREAM_ENUM       = require('./src/config/event')
 
 let app = new StreamHandler(redisClient)
 log(`Event "${ STREAM_ENUM.SIGN_IN }" send to server`)
-let payload = { user: 'mahdi', email: 'info@server.io', password: '123' }
+let payload = { user: 'Alison', email: 'info@server.io', password: '123' }
 app.sendMessage(STREAM_ENUM.SIGN_IN, payload)
 setTimeout(_=>{
   process.exit()

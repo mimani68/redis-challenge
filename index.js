@@ -2,6 +2,7 @@ let { log }           = require('./src/common/logs')
 let { StreamHandler } = require('./src/app')
 let { redisClient }   = require('./src/common/redis/redis')
 let STREAM_ENUM       = require('./src/config/event')
+let { User }          = require('./src/model/user')
 
 // Initial setup
 let app = new StreamHandler(redisClient) 
@@ -12,9 +13,9 @@ let startEvent = new StreamHandler(redisClient)
 startEvent
   .defineVariables(STREAM_ENUM.START)
   .defineGroup()
-  .listen( result =>{
-    log(`[EVENT] ${ STREAM_ENUM.START }`)
-    log('store result in database ' + result.id)
+  .listen( req =>{
+    log(`[EVENT] ${ STREAM_ENUM.START } - ${ req.id }`)
+    log('store result in database ' + req.id)
   })
 
 // Event `Login`
@@ -22,9 +23,8 @@ let loginEvent = new StreamHandler(redisClient)
 loginEvent
   .defineVariables(STREAM_ENUM.LOGIN)
   .defineGroup()
-  .listen( result =>{
-    log(`[EVENT] ${ STREAM_ENUM.LOGIN }`)
-    log('store result in database ' + result.id)
+  .listen( req =>{
+    log(`[EVENT] ${ STREAM_ENUM.LOGIN } - ${ req.id }`)
     let payload = { state: 'User login' }
     loginEvent.sendMessage(STREAM_ENUM.PROFILE_UPDTAE_STATE, payload) 
   })
@@ -34,9 +34,20 @@ let SignInEvent = new StreamHandler(redisClient)
 SignInEvent
   .defineVariables(STREAM_ENUM.SIGN_IN)
   .defineGroup()
-  .listen( result =>{
-    log(`[EVENT] ${ STREAM_ENUM.SIGN_IN }`)
-    log('store result in database ' + result.id)
+  .listen( req =>{
+    log(`[EVENT] ${ STREAM_ENUM.SIGN_IN } - ${ req.id }`)
+    /**
+     * 
+     * Notify other services that new request is incoming
+     * 
+     */
     let payload = { state: 'User unverified' }
-    SignInEvent.sendMessage(STREAM_ENUM.FIRST_CHARGE, payload)  
+    SignInEvent.sendMessage(STREAM_ENUM.FIRST_CHARGE, payload)
+    /**
+     * 
+     * Store user as HashMap inredis
+     * 
+     */
+    let u = new User(req.user, req.email, req.password)
+    u.save()
   })

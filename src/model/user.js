@@ -1,4 +1,6 @@
-// const { hmsetAsync } = require("../common/redis/redis")
+const { hmsetAsync } = require("../common/redis/redis")
+const Joi = require('joi')
+const uuid = require('uuid')
 
 function User(...params) {
   this.REDIS_KEY = 'user-'
@@ -10,11 +12,21 @@ function User(...params) {
 User.prototype.save = async function() {
   let self = this
   const schema = Joi.object({
-    username: Joi.string()
-        .alphanum()
-        .min(3)
-        .max(30)
-        .required(),
+    name: Joi.string()
+      .alphanum()
+      .min(3)
+      .max(30)
+      .required(),
+    email: Joi.string()
+      .alphanum()
+      .min(3)
+      .max(30)
+      .required(),
+    password: Joi.string()
+      .alphanum()
+      .min(3)
+      .max(30)
+      .required(),
   })
   let isValid = schema.validate({
     name     : self.name,
@@ -23,12 +35,18 @@ User.prototype.save = async function() {
   })
   if ( isValid ) {
     let label = this.REDIS_KEY
-    let result = await hmsetAsync(label, {
+    let id = uuid.v4()
+    let result = await hmsetAsync(label + id, {
+      id       : id,
       user     : self.name,
       email    : self.email,
       password : self.password
     })
-    return true
+    if ( result ) {
+      return true
+    } else {
+      return false
+    }
   } else {
     return false
   }

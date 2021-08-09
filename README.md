@@ -18,6 +18,11 @@ This service must retrive stream event and then store data as `HASHMAP` in redis
 node index.js
 ```
 
+For start `app:profile:sign_in` event you can use
+```bash
+node publisher.js
+```
+
 ## Redis commands
 
 For mannual testing the project and data flow you can send data with this two command
