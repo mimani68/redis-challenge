@@ -29,7 +29,7 @@ XADD app:profile:login * name mahdi email info@imani.ir password 123
 And final result should capture with this one
 
 ```bash
-XREAD BLOCK 0 STREAMS app:wallet:first-charge $
+XREAD BLOCK 0 STREAMS app:wallet:first_charge $
 ```
 ## Refrence
 

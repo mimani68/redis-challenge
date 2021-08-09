@@ -23,11 +23,11 @@ User.prototype.save = async function() {
   })
   if ( isValid ) {
     let label = this.REDIS_KEY
-    // let result = await hmsetAsync(label, {
-    //   user     : self.name,
-    //   email    : self.email,
-    //   password : self.password
-    // })
+    let result = await hmsetAsync(label, {
+      user     : self.name,
+      email    : self.email,
+      password : self.password
+    })
     return true
   } else {
     return false
