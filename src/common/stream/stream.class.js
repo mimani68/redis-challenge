@@ -1,6 +1,7 @@
 let async = require('async');
 
-let { arrayToObject } = require('./common/helper')
+let { arrayToObject } = require('../helper')
+let { log } = require('../logs/index')
 
 function StreamHandler(redisClient) {
   this.redisClient = redisClient;
@@ -18,9 +19,9 @@ StreamHandler.prototype.defineGroup = function () {
   this.redisClient.xgroup("CREATE", self.STREAMS_KEY, self.APPLICATION_ID, '$', function (err) {
     if (err) {
       if (err.code == 'BUSYGROUP') {
-        console.log(`Group ${self.APPLICATION_ID} already exists`);
+        log(`Group ${self.APPLICATION_ID} already exists`);
       } else {
-        console.log(err);
+        log(err);
         process.exit();
       }
     }
@@ -40,7 +41,7 @@ StreamHandler.prototype.sendMessage = function (steamAddress, value) {
   this.redisClient.xadd(...arg,
     function (err) { 
       if (err) { 
-        console.log(err)
+        log(err)
       };
     });
 }
@@ -66,15 +67,12 @@ StreamHandler.prototype.listen = function (cb) {
           // print all messages
           let e = arrayToObject( messages )
           cb(e)
-
-        } else {
-          console.log("Waiting");
         }
         next();
       });
     },
     function (err) {
-      console.log(" ERROR " + err);
+      log(" ERROR " + err);
       process.exit()
     }
   );
