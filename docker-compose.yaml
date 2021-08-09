@@ -22,4 +22,6 @@ services:
     image: bitnami/redis:6.0-debian-10
     environment: 
       - REDIS_PASSWORD=bnf9cU34naC9
+    ports:
+      - "6379:6379"
 
